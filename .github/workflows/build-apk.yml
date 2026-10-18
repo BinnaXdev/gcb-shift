@@ -1,0 +1,37 @@
+name: Build Android APK
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Organize files
+        run: |
+          mkdir -p www assets
+          cp index.html holidays.js sw.js manifest.json icon-192.png icon-512.png www/
+          cp icon-only.png icon-foreground.png icon-background.png assets/
+      - name: Install dependencies
+        run: npm install
+      - name: Add Android platform
+        run: npx cap add android
+      - name: Generate icons
+        run: npx capacitor-assets generate --android
+      - name: Sync web files
+        run: npx cap sync android
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: GCB-Shift-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
