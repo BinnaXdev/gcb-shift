@@ -1,0 +1,8 @@
+{
+  "appId": "com.gcb.shift",
+  "appName": "GCB Shift",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
