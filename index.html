@@ -3,123 +3,124 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#10233f">
-<meta name="description" content="GCB Shift — votre calendrier de rotation de travail et de repos.">
+<meta name="theme-color" content="#f15e2a">
+<meta name="description" content="GCB Shift — work and rest rotation calendar.">
 <link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
 <title>GCB Shift</title>
-<style>
-:root{--navy:#07090c;--navy2:#101820;--blue:#1f2935;--orange:#f4511e;--gold:#ffbd32;--bg:#080a0d;--card:#111922;--card2:#17212c;--text:#f6f7f9;--muted:#a1adbb;--green:#24b77a;--red:#ff553d;--line:#27323e}
-*{box-sizing:border-box}html{background:var(--bg)}body{margin:0;background:radial-gradient(ellipse at top,#1a2028 0,#080a0d 48%);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--text);min-height:100vh}
-header{background:linear-gradient(120deg,#f4511e 0%,#ff7624 48%,#ffbd32 100%);color:#090909;padding:24px 19px 27px;border-radius:0 0 25px 25px;box-shadow:0 8px 35px #f4511e22}
-.brand{display:flex;align-items:center;gap:13px}.logo{width:52px;height:52px;border:2px solid #08090b;border-radius:15px;display:grid;place-items:center;font-weight:950;font-size:14px;background:#08090b;color:var(--gold);position:relative;letter-spacing:1px;box-shadow:0 4px 12px #0002}.logo:after{content:"↻";position:absolute;right:-7px;bottom:-7px;background:var(--gold);color:#000;border:2px solid #08090b;border-radius:50%;width:22px;height:22px;display:grid;place-items:center;font-size:16px}
-h1{font-size:25px;margin:0;letter-spacing:-.6px;font-weight:900}h1 span{color:#fff}header p{margin:5px 0 0;color:#29140d;font-size:12px;font-weight:700;letter-spacing:.15px}
-.container{max-width:760px;margin:auto;padding:17px 14px 100px}.section-title{font-size:15px;margin:22px 3px 11px;font-weight:850;letter-spacing:-.15px;display:flex;align-items:center;gap:8px}.section-title:before{content:"";display:block;width:4px;height:16px;border-radius:5px;background:var(--gold)}
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{background:linear-gradient(145deg,#151e28,#0e141b);border-radius:18px;padding:16px;box-shadow:0 7px 22px #0003;border:1px solid #26313d}
-.metric-label{font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:850;letter-spacing:.9px}.metric{font-size:23px;font-weight:900;margin-top:8px;line-height:1.2;letter-spacing:-.5px}.sub{font-size:11px;color:var(--muted);margin-top:7px;line-height:1.5}
-.hero{background:linear-gradient(145deg,#ffbd32 0%,#ff8b22 58%,#f4511e 100%);color:#111;border:0;position:relative;overflow:hidden}.hero:after{content:"G";position:absolute;font-size:125px;line-height:1;font-weight:950;right:-3px;bottom:-35px;color:#0000; -webkit-text-stroke:2px #00000016;pointer-events:none}.hero .metric-label,.hero .sub{color:#43200f}.hero .metric{font-size:27px}.badge{display:inline-block;padding:6px 9px;border-radius:999px;background:#163b2d;color:#7af0b7;font-size:10px;font-weight:850;white-space:nowrap;border:1px solid #236148}.hero .badge{background:#111;color:var(--gold);border:0}
-.progress{height:8px;background:#303b48;border-radius:99px;overflow:hidden;margin-top:13px}.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--gold));width:0;border-radius:99px;transition:width .35s ease}
-.form{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}label{font-size:11px;font-weight:800;color:#c7d0dc}input,select{width:100%;border:1px solid #303c49;background:#0b1016;border-radius:12px;padding:12px;font:inherit;color:var(--text);min-height:46px;outline:none}input:focus,select:focus{border-color:var(--gold);box-shadow:0 0 0 3px #ffbd3218}button{border:0;border-radius:12px;padding:13px 15px;font:inherit;font-size:13px;font-weight:850;cursor:pointer;transition:transform .15s,filter .15s}button:active{transform:scale(.98)}.primary{background:linear-gradient(100deg,var(--orange),var(--gold));color:#17100a;box-shadow:0 4px 15px #f4511e22}.secondary{background:#202b37;color:#e8edf4;border:1px solid #344251}.actions{display:flex;gap:9px;margin-top:13px}.actions button{flex:1}
-.rotation{display:flex;gap:12px;align-items:flex-start}.datebox{background:linear-gradient(145deg,#ffbd32,#f4511e);color:#140c07;border-radius:13px;min-width:58px;text-align:center;padding:9px 5px}.datebox b{display:block;font-size:20px;font-weight:950}.datebox small{font-size:10px;font-weight:800;text-transform:uppercase}.rotation-main{flex:1;min-width:0}.rotation-title{font-weight:850;font-size:13px}.rotation-meta{font-size:11px;color:var(--muted);line-height:1.8;margin-top:7px}.rotation-actions{display:flex;gap:6px;margin-top:10px}.rotation-actions button{padding:8px 11px;font-size:11px}.empty{padding:22px;text-align:center;color:var(--muted);font-size:13px}
-.settings{display:grid;grid-template-columns:1fr 1fr;gap:10px}.setting{background:linear-gradient(145deg,#151e28,#0e141b);border:1px solid #26313d;border-radius:15px;padding:14px}.setting span{display:block;font-size:11px;color:var(--muted)}.setting b{display:block;font-size:19px;margin-top:6px;color:var(--gold)}
-footer{text-align:center;color:#758292;font-size:10px;padding:18px 10px}
-nav{position:fixed;bottom:0;left:0;right:0;background:#0c1118f2;backdrop-filter:blur(18px);display:flex;justify-content:space-around;border-top:1px solid #26313d;padding:9px 4px calc(9px + env(safe-area-inset-bottom));z-index:3}nav button{background:transparent;color:#8593a3;font-size:10px;padding:7px 14px;border-radius:12px;line-height:1.7}nav button.active{color:var(--gold);background:#ffbd3214}
-.hidden{display:none!important}.holiday-row{font-size:12px;padding:12px 0;border-bottom:1px solid #26313d;display:flex;justify-content:space-between;gap:10px}.holiday-row:last-child{border-bottom:0}.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:7px;background:var(--orange)}
-@media(min-width:600px){header{padding-left:max(24px,calc((100% - 710px)/2));padding-right:max(24px,calc((100% - 710px)/2))}.container{padding-top:24px}.cards{grid-template-columns:repeat(4,1fr)}.hero{grid-column:span 2}}
-</style>
 </head>
 <body>
-<header><div class="brand"><div class="logo">GCB</div><div><h1>GCB <span>Shift</span></h1><p>WORK. REST. REPEAT. · Votre rotation, sous contrôle.</p></div></div></header>
-<main class="container">
-<section id="dashboard">
-<div class="section-title">Votre situation</div>
-<div class="cards">
-<div class="card hero"><div class="metric-label">Statut actuel</div><div class="metric" id="status">Aucune rotation</div><div class="sub" id="statusSub">Ajoutez votre première rotation</div></div>
-<div class="card"><div class="metric-label">Jours restants</div><div class="metric" id="remaining">—</div><div class="sub" id="remainingSub">Selon la phase en cours</div></div>
-<div class="card"><div class="metric-label">Fin de la phase</div><div class="metric" id="phaseEnd">—</div><div class="sub">Date estimée</div></div>
-<div class="card"><div class="metric-label">Prochain départ</div><div class="metric" id="nextStart">—</div><div class="sub">Début du prochain cycle</div></div>
+<div id="loader" aria-hidden="true">
+  <img class="ld-logo" src="logo.png" alt="">
+  <div class="ld-slogan"><span class="w1">WORK.</span><span class="w2">REST.</span><span class="w3">REPEAT.</span><span class="ld-spin">↻</span></div>
+  <div class="ld-bar"><i></i></div>
 </div>
-<div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b id="phaseTitle">Progression de la rotation</b><span class="badge" id="progressLabel">0%</span></div><div class="progress"><span id="progressBar"></span></div><div class="sub" id="progressSub">Le calendrier se met à jour automatiquement.</div></div>
-<div class="section-title">Ajouter une rotation</div>
+<script>
+(function(){var l=document.getElementById('loader');if(!l)return;
+try{if(sessionStorage.getItem('gcbLoaded')){l.remove();return}sessionStorage.setItem('gcbLoaded','1')}catch(e){}
+var done=false,hide=function(){if(done)return;done=true;l.classList.add('out');setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l)},500)};
+setTimeout(hide,2700);l.addEventListener('click',hide)})();
+</script>
+<header><div class="brand"><img class="logo" src="logo.png" alt="GCB"><div><h1>GCB <span>Shift</span></h1><p data-i18n="tagline"></p></div></div></header>
+<main class="container">
+
+<section id="dashboard">
+<div class="section-title" data-i18n="yourSituation"></div>
+<div class="cards">
+<div class="card hero"><div class="metric-label" data-i18n="statusCurrent"></div><div class="metric" id="status">—</div><div class="sub" id="statusSub"></div></div>
+<div class="card"><div class="metric-label" data-i18n="daysLeft"></div><div class="metric" id="remaining">—</div><div class="sub" id="remainingSub"></div></div>
+<div class="card"><div class="metric-label" data-i18n="phaseEnd"></div><div class="metric" id="phaseEnd">—</div><div class="sub" data-i18n="estDate"></div></div>
+<div class="card"><div class="metric-label" data-i18n="nextStart"></div><div class="metric" id="nextStart">—</div><div class="sub" data-i18n="nextCycleStart"></div></div>
+</div>
+<div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b id="phaseTitle"></b><span class="badge" id="progressLabel">0%</span></div><div class="progress"><span id="progressBar"></span></div><div class="sub" id="progressSub"></div></div>
+
+<div id="backupBanner" class="card hidden" style="margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:10px"><span class="sub" style="margin:0" data-i18n="backupReminder"></span><button class="secondary" id="bannerBackup" data-i18n="backupNow"></button></div>
+
+<div class="section-title" id="formTitle" data-i18n="addRotation"></div>
 <div class="card">
 <form id="rotationForm">
 <div class="form">
-<div class="field"><label for="startDate">Date de début du cycle</label><input id="startDate" type="date" required></div>
-<div class="field"><label for="transport">Transport</label><select id="transport"><option value="Propres Moyens">Véhicule personnel (+4 j)</option><option value="Réservation entreprise">Véhicule entreprise (+2 j)</option></select></div>
-<div class="field full"><label for="note">Note (facultatif)</label><input id="note" maxlength="80" placeholder="Ex. équipe, chantier, remarque…"></div>
+<div class="field"><label for="startDate" data-i18n="startDate"></label><input id="startDate" type="date" required></div>
+<div class="field"><label for="transport" data-i18n="transport"></label><select id="transport"></select></div>
+<div class="field full"><label for="note" data-i18n="note"></label><input id="note" maxlength="80" data-i18n-ph="notePh"></div>
 </div>
-<div class="actions"><button class="primary" type="submit">＋ Enregistrer la rotation</button></div>
+<div class="actions"><button class="primary" type="submit" id="saveBtn"></button><button class="secondary hidden" type="button" id="cancelEdit" data-i18n="cancel"></button></div>
 </form>
 </div>
-<div class="section-title">Mes rotations</div><div id="rotationList"></div>
+<div class="section-title" data-i18n="myRotations"></div><div id="rotationList"></div>
 </section>
-<section id="holidays" class="hidden">
-<div class="section-title">Jours fériés intégrés</div>
-<div class="card"><p class="sub" style="margin-top:0">Les jours fériés qui tombent pendant votre période de travail ajoutent 2 jours de repos chacun. Les dates des fêtes religieuses sont indicatives et doivent être confirmées officiellement.</p><div id="holidayList"></div></div>
-</section>
-<section id="settingsPage" class="hidden">
-<div class="section-title">Règles de rotation</div>
-<div class="settings">
-<div class="setting"><span>Durée du travail</span><b>42 jours</b></div>
-<div class="setting"><span>Repos de base (CR)</span><b>14 jours</b></div>
-<div class="setting"><span>Bonus par jour férié travaillé</span><b>+2 jours</b></div>
-<div class="setting"><span>Véhicule personnel</span><b>+4 jours</b></div>
-<div class="setting"><span>Véhicule entreprise</span><b>+2 jours</b></div>
-<div class="setting"><span>Stockage</span><b>Sur ce téléphone</b></div>
+
+<section id="calendarPage" class="hidden">
+<div class="section-title" data-i18n="calTitle"></div>
+<div class="card">
+<div class="cal-head"><b id="calTitle"></b><div class="cal-nav"><button class="secondary" id="calPrev" aria-label="prev">‹</button><button class="secondary" id="calNext" aria-label="next">›</button></div></div>
+<div class="cal-grid" id="calGrid"></div>
+<div class="legend"><span><i style="background:#f4511e"></i><span data-i18n="legWork"></span></span><span><i style="background:#24b77a"></i><span data-i18n="legRest"></span></span><span><i style="background:#ffbd32"></i><span data-i18n="legHol"></span></span><span><i style="border:2px solid #ffbd32"></i><span data-i18n="legToday"></span></span></div>
+<div class="day-detail" id="dayDetail"></div>
 </div>
-<div class="section-title">Sauvegarde</div><div class="card"><p class="sub">Exportez vos rotations pour garder une copie ou les transférer sur un autre téléphone.</p><div class="actions"><button class="primary" id="exportBtn">Exporter les données</button><button class="secondary" id="importBtn">Importer</button></div><input id="importFile" type="file" accept="application/json" class="hidden"></div>
-<div class="section-title">Réinitialisation</div><div class="card"><p class="sub">Supprime toutes les rotations enregistrées sur cet appareil.</p><button class="secondary" id="clearBtn">Effacer toutes les rotations</button></div>
 </section>
-<footer>GCB Shift · Application personnelle non officielle</footer>
+
+<section id="holidays" class="hidden">
+<div class="section-title" data-i18n="holTitle"></div>
+<div class="card"><p class="sub" style="margin-top:0" id="holIntro"></p><div id="holidayList"></div>
+<div class="actions"><button class="primary" id="addHolBtn" data-i18n="holAdd"></button></div></div>
+</section>
+
+<section id="settingsPage" class="hidden">
+<div class="section-title" data-i18n="appearance"></div>
+<div class="card">
+<div class="set-row"><label for="setLang" data-i18n="language"></label><select id="setLang"><option value="fr">Français</option><option value="en">English</option><option value="ar">العربية</option></select></div>
+<div class="set-row"><label for="setTheme" data-i18n="theme"></label><select id="setTheme"></select></div>
+<div class="set-row"><label for="setWeek" data-i18n="weekStart"></label><select id="setWeek"></select></div>
+</div>
+
+<div class="section-title" data-i18n="rulesTitle"></div>
+<div class="card">
+<div class="set-row"><label for="setWork" data-i18n="workDays"></label><input id="setWork" type="number" min="1" max="365" inputmode="numeric"></div>
+<div class="set-row"><label for="setRest" data-i18n="baseRest"></label><input id="setRest" type="number" min="0" max="365" inputmode="numeric"></div>
+<div class="set-row"><label for="setBonus" data-i18n="holBonus"></label><input id="setBonus" type="number" min="0" max="30" inputmode="numeric"></div>
+<div class="set-row"><label for="setOwn" data-i18n="ownBonus"></label><input id="setOwn" type="number" min="0" max="30" inputmode="numeric"></div>
+<div class="set-row"><label for="setComp" data-i18n="compBonus"></label><input id="setComp" type="number" min="0" max="30" inputmode="numeric"></div>
+<div class="hint" data-i18n="rulesNote"></div>
+</div>
+
+<div class="section-title" data-i18n="notifTitle"></div>
+<div class="card">
+<div class="set-row"><label for="setNotifOn" data-i18n="notifOn"></label><input id="setNotifOn" type="checkbox"></div>
+<div class="set-row"><label for="setNotifTime" data-i18n="notifTime"></label><input id="setNotifTime" type="time"></div>
+<div class="set-row"><label for="setNotifDays" data-i18n="notifDays"></label><select id="setNotifDays"></select></div>
+<div class="hint" data-i18n="notifHint"></div><div class="hint warn" id="notifMsg"></div>
+</div>
+
+<div class="section-title" data-i18n="backupTitle"></div>
+<div class="card"><p class="sub" style="margin-top:0" data-i18n="backupText"></p><div class="sub" id="lastBackup"></div>
+<div class="actions"><button class="primary" id="exportBtn" data-i18n="export"></button><button class="secondary" id="importBtn" data-i18n="import"></button></div><input id="importFile" type="file" accept="application/json,.json" class="hidden"></div>
+
+<div class="section-title" data-i18n="resetTitle"></div>
+<div class="card"><p class="sub" style="margin-top:0" data-i18n="resetText"></p><button class="secondary" id="clearBtn" data-i18n="resetBtn"></button></div>
+</section>
+
+<footer data-i18n="footer"></footer>
 </main>
+
+<div class="modal hidden" id="holModal"><div class="card">
+<h3 id="holModalTitle"></h3>
+<div class="form">
+<div class="field full" id="holNameWrap"><label for="holName" data-i18n="holName"></label><input id="holName" maxlength="60"></div>
+<div class="field full"><label for="holDate" data-i18n="holDate"></label><input id="holDate" type="date"></div>
+</div>
+<div class="sub" id="holModalNote"></div>
+<div class="actions"><button class="primary" id="holSave" data-i18n="save"></button><button class="secondary" id="holCancel" data-i18n="cancel"></button></div>
+<div class="actions"><button class="secondary hidden" id="holReset" data-i18n="resetDate"></button><button class="secondary hidden" id="holDelete" data-i18n="del"></button></div>
+</div></div>
+
 <nav>
-<button class="active" data-page="dashboard">⌂<br>Accueil</button>
-<button data-page="holidays">▦<br>Fériés</button>
-<button data-page="settingsPage">⚙<br>Paramètres</button>
+<button class="active" data-page="dashboard">⌂<br><span data-i18n="navHome"></span></button>
+<button data-page="calendarPage">▤<br><span data-i18n="navCal"></span></button>
+<button data-page="holidays">▦<br><span data-i18n="navHol"></span></button>
+<button data-page="settingsPage">⚙<br><span data-i18n="navSet"></span></button>
 </nav>
+<script src="i18n.js"></script>
 <script src="holidays.js"></script>
-<script>
-const $=id=>document.getElementById(id);
-const DAY=86400000, WORK=42, BASE_REST=14, BONUS_PER_HOLIDAY=2;
-let rotations=JSON.parse(localStorage.getItem('gcbShiftRotations')||'[]');
-const fmt=d=>d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'});
-const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-const parse=s=>{let [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
-const add=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);
-const today=()=>{let d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate())};
-function calc(r){
- const start=parse(r.start), endWork=add(start,WORK-1);
- const worked=(window.GCB_HOLIDAYS||[]).filter(h=>{let d=parse(h.date);return d>=start&&d<=endWork});
- const route=r.transport==='Propres Moyens'?4:2, bonus=worked.length*BONUS_PER_HOLIDAY+route;
- const rest=BASE_REST+bonus, endRest=add(endWork,rest), next=add(endRest,1), t=today();
- let status, remaining=0, phaseEnd, progress=0, title;
- if(t<start){status='À venir';remaining=Math.round((start-t)/DAY);phaseEnd=start;progress=0;title='Avant le départ'}
- else if(t<=endWork){status='En travail';remaining=Math.round((endWork-t)/DAY);phaseEnd=endWork;progress=Math.min(100,Math.round(((t-start)/DAY+1)/WORK*100));title='Période de travail'}
- else if(t<=endRest){status='En CR';remaining=Math.round((endRest-t)/DAY);phaseEnd=endRest;progress=Math.min(100,Math.round(((t-endWork)/DAY)/rest*100));title='Congé de repos (CR)'}
- else {status='Terminé';remaining=0;phaseEnd=endRest;progress=100;title='Rotation terminée'}
- return {...r,startDate:start,endWork,worked,route,bonus,rest,endRest,next,status,remaining,phaseEnd,progress,title};
-}
-function save(){localStorage.setItem('gcbShiftRotations',JSON.stringify(rotations));render()}
-function render(){
- const all=rotations.map(calc).sort((a,b)=>b.startDate-a.startDate), current=all.find(r=>r.status==='En travail'||r.status==='En CR'||r.status==='À venir')||all[0];
- if(!current){$('status').textContent='Aucune rotation';$('statusSub').textContent='Ajoutez votre première rotation';$('remaining').textContent='—';$('phaseEnd').textContent='—';$('nextStart').textContent='—';$('progressBar').style.width='0%';$('progressLabel').textContent='0%';$('phaseTitle').textContent='Progression de la rotation';$('progressSub').textContent='Le calendrier se met à jour automatiquement.'}
- else{
- $('status').textContent=current.status;$('statusSub').textContent=`Cycle commencé le ${fmt(current.startDate)}`;$('remaining').textContent=current.status==='Terminé'?'0':current.remaining;$('remainingSub').textContent=current.status==='En CR'?'jours avant la fin du repos':current.status==='En travail'?'jours avant la fin du travail':current.status==='À venir'?'jours avant le départ':'rotation terminée';$('phaseEnd').textContent=fmt(current.phaseEnd);$('nextStart').textContent=fmt(current.next);$('progressBar').style.width=current.progress+'%';$('progressLabel').textContent=current.progress+'%';$('phaseTitle').textContent=current.title;$('progressSub').textContent=`Travail jusqu’au ${fmt(current.endWork)} · Repos jusqu’au ${fmt(current.endRest)} · ${current.worked.length} jour(s) férié(s) compté(s)`;
- }
- const list=$('rotationList');
- if(!all.length){list.innerHTML='<div class="card empty">Aucune rotation enregistrée pour le moment.</div>'}
- else list.innerHTML=all.map((r,i)=>`<div class="card" style="margin-bottom:10px"><div class="rotation"><div class="datebox"><small>${r.startDate.toLocaleDateString('fr-FR',{month:'short'})}</small><b>${String(r.startDate.getDate()).padStart(2,'0')}</b><small>${r.startDate.getFullYear()}</small></div><div class="rotation-main"><div class="rotation-title">Cycle ${rotations.length-all.indexOf(r)} <span class="badge" style="float:right">${r.status}</span></div><div class="rotation-meta">Travail : ${fmt(r.startDate)} – ${fmt(r.endWork)}<br>Fin du CR : ${fmt(r.endRest)} · Prochain départ : ${fmt(r.next)}<br>Repos : ${r.rest} jours (${BASE_REST} + ${r.worked.length*BONUS_PER_HOLIDAY} bonus fériés + ${r.route} route)</div>${r.note?`<div class="sub">${escapeHtml(r.note)}</div>`:''}<div class="rotation-actions"><button class="secondary" onclick="editRotation('${r.id}')">Modifier</button><button class="secondary" onclick="deleteRotation('${r.id}')">Supprimer</button></div></div></div></div>`).join('');
- $('holidayList').innerHTML=(window.GCB_HOLIDAYS||[]).filter(h=>h.date>='2026-01-01').map(h=>`<div class="holiday-row"><span><i class="dot" style="background:${h.type==='Aïd'?'#16865c':h.type==='Fête musulmane'?'#3478c8':'#f28c28'}"></i>${escapeHtml(h.name)}${h.note?'<div class="sub">'+escapeHtml(h.note)+'</div>':''}</span><b>${fmt(parse(h.date))}</b></div>`).join('');
-}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-$('rotationForm').addEventListener('submit',e=>{e.preventDefault();const start=$('startDate').value;if(!start)return;const id=crypto.randomUUID?crypto.randomUUID():String(Date.now());rotations.push({id,start,transport:$('transport').value,note:$('note').value.trim()});$('note').value='';save()});
-window.deleteRotation=id=>{if(confirm('Supprimer cette rotation ?')){rotations=rotations.filter(r=>r.id!==id);save()}};
-window.editRotation=id=>{const r=rotations.find(x=>x.id===id);if(!r)return;$('startDate').value=r.start;$('transport').value=r.transport;$('note').value=r.note||'';rotations=rotations.filter(x=>x.id!==id);save();window.scrollTo({top:0,behavior:'smooth'})};
-document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));['dashboard','holidays','settingsPage'].forEach(p=>$(p).classList.toggle('hidden',p!==b.dataset.page));window.scrollTo({top:0,behavior:'smooth'})}));
-$('exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify({app:'GCB Shift',version:1,rotations},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gcb-shift-backup.json';a.click();URL.revokeObjectURL(a.href)};
-$('importBtn').onclick=()=>$('importFile').click();
-$('importFile').onchange=async e=>{try{const obj=JSON.parse(await e.target.files[0].text());if(!Array.isArray(obj.rotations))throw Error();if(confirm('Remplacer les rotations actuelles par la sauvegarde ?')){rotations=obj.rotations;save()}}catch{alert('Fichier de sauvegarde invalide.')}e.target.value=''};
-$('clearBtn').onclick=()=>{if(confirm('Effacer toutes les rotations ? Cette action est irréversible.')){rotations=[];save()}};
-$('startDate').value=iso(today());render();
-if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
-</script>
+<script src="app.js"></script>
 </body></html>

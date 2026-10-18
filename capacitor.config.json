@@ -2,7 +2,10 @@
   "appId": "com.gcb.shift",
   "appName": "GCB Shift",
   "webDir": "www",
-  "server": {
-    "androidScheme": "https"
+  "server": { "androidScheme": "https" },
+  "plugins": {
+    "SplashScreen": { "launchShowDuration": 500, "launchAutoHide": true, "backgroundColor": "#F15E2A", "showSpinner": false },
+    "LocalNotifications": { "smallIcon": "ic_stat_gcb", "iconColor": "#F4511E" },
+    "StatusBar": { "overlaysWebView": false, "style": "LIGHT", "backgroundColor": "#F15E2A" }
   }
 }

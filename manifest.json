@@ -4,8 +4,8 @@
   "description": "Votre rotation de travail et de repos",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f3f6fa",
-  "theme_color": "#10233f",
+  "background_color": "#080a0d",
+  "theme_color": "#f15e2a",
   "icons": [
     {
       "src": "icon-192.png",
