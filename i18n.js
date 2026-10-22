@@ -59,7 +59,17 @@ fr: {
   ntWorkIn: "Fin du travail dans {n} jour(s)", ntWorkToday: "Dernier jour de travail aujourd’hui",
   ntNextIn: "Prochain départ dans {n} jour(s)", ntNextToday: "Prochain départ aujourd’hui",
   ntBackup: "Pensez à sauvegarder vos rotations (Réglages → Sauvegarde).",
-  wOpen: "Ouvrez l’application", wUntil: "Jusqu’au", wDays: "jours restants"
+  wOpen: "Ouvrez l’application", wUntil: "Jusqu’au", wDays: "jours restants",
+  currency: "DA",
+  feesLine: "Frais de route : {n}",
+  feesDetail: "Voyage {km} km × prix = {v} · Panier {pd} j = {p} · Hébergement {nt} nuit(s) = {h}",
+  kmRT: "Kilométrage aller-retour (km) — frais de route",
+  panierDays: "Jours de panier (vide = auto)",
+  nightsLbl: "Nuits d’hébergement (vide = auto)",
+  kmPrice: "Prix du km (DA)",
+  panierRate: "Panier par jour (DA)",
+  hebRate: "Hébergement par nuit (DA)",
+  nightsDef: "Nuits d’hébergement par défaut"
 },
 en: {
   tagline: "WORK. REST. REPEAT. · Your rotation, under control.",
@@ -121,7 +131,17 @@ en: {
   ntWorkIn: "Work ends in {n} day(s)", ntWorkToday: "Last work day today",
   ntNextIn: "Next departure in {n} day(s)", ntNextToday: "Next departure today",
   ntBackup: "Remember to back up your rotations (Settings → Backup).",
-  wOpen: "Open the app", wUntil: "Until", wDays: "days left"
+  wOpen: "Open the app", wUntil: "Until", wDays: "days left",
+  currency: "DZD",
+  feesLine: "Travel allowance: {n}",
+  feesDetail: "Travel {km} km × rate = {v} · Meals {pd} d = {p} · Lodging {nt} night(s) = {h}",
+  kmRT: "Round-trip distance (km) — travel allowance",
+  panierDays: "Meal-allowance days (empty = auto)",
+  nightsLbl: "Lodging nights (empty = auto)",
+  kmPrice: "Price per km (DZD)",
+  panierRate: "Meal allowance per day (DZD)",
+  hebRate: "Lodging per night (DZD)",
+  nightsDef: "Default lodging nights"
 },
 ar: {
   tagline: "العمل. الراحة. التكرار · دورتك تحت السيطرة",
@@ -183,6 +203,16 @@ ar: {
   ntWorkIn: "نهاية العمل بعد {n} يوم", ntWorkToday: "آخر يوم عمل اليوم",
   ntNextIn: "المغادرة القادمة بعد {n} يوم", ntNextToday: "المغادرة القادمة اليوم",
   ntBackup: "تذكير: احفظ نسخة من دوراتك (الإعدادات ← النسخ الاحتياطي).",
-  wOpen: "افتح التطبيق", wUntil: "حتى", wDays: "أيام متبقية"
+  wOpen: "افتح التطبيق", wUntil: "حتى", wDays: "أيام متبقية",
+  currency: "دج",
+  feesLine: "مصاريف الطريق: {n}",
+  feesDetail: "السفر {km} كم × السعر = {v} · السلة {pd} يوم = {p} · الإيواء {nt} ليلة = {h}",
+  kmRT: "المسافة ذهابا وإيابا (كم) — مصاريف الطريق",
+  panierDays: "أيام السلة (فارغ = تلقائي)",
+  nightsLbl: "ليالي الإيواء (فارغ = تلقائي)",
+  kmPrice: "سعر الكيلومتر (دج)",
+  panierRate: "السلة لكل يوم (دج)",
+  hebRate: "الإيواء لكل ليلة (دج)",
+  nightsDef: "ليالي الإيواء الافتراضية"
 }
 };

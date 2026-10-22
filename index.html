@@ -42,6 +42,9 @@ setTimeout(hide,2700);l.addEventListener('click',hide)})();
 <div class="form">
 <div class="field"><label for="startDate" data-i18n="startDate"></label><input id="startDate" type="date" required></div>
 <div class="field"><label for="transport" data-i18n="transport"></label><select id="transport"></select></div>
+<div class="field full" id="feeBox"><label for="km" data-i18n="kmRT"></label><input id="km" type="number" min="0" step="any" inputmode="decimal" placeholder="ex. 1800">
+<div class="form" style="margin-top:8px"><div class="field"><label for="panierDays" data-i18n="panierDays"></label><input id="panierDays" type="number" min="0" inputmode="numeric"></div>
+<div class="field"><label for="nights" data-i18n="nightsLbl"></label><input id="nights" type="number" min="0" inputmode="numeric"></div></div></div>
 <div class="field full"><label for="note" data-i18n="note"></label><input id="note" maxlength="80" data-i18n-ph="notePh"></div>
 </div>
 <div class="actions"><button class="primary" type="submit" id="saveBtn"></button><button class="secondary hidden" type="button" id="cancelEdit" data-i18n="cancel"></button></div>
@@ -82,6 +85,10 @@ setTimeout(hide,2700);l.addEventListener('click',hide)})();
 <div class="set-row"><label for="setOwnFar" data-i18n="ownFarBonus"></label><input id="setOwnFar" type="number" min="0" max="30" inputmode="numeric"></div>
 <div class="set-row"><label for="setOwnNear" data-i18n="ownNearBonus"></label><input id="setOwnNear" type="number" min="0" max="30" inputmode="numeric"></div>
 <div class="set-row"><label for="setComp" data-i18n="compBonus"></label><input id="setComp" type="number" min="0" max="30" inputmode="numeric"></div>
+<div class="set-row"><label for="setKmPrice" data-i18n="kmPrice"></label><input id="setKmPrice" type="number" min="0" step="any" inputmode="decimal"></div>
+<div class="set-row"><label for="setPanier" data-i18n="panierRate"></label><input id="setPanier" type="number" min="0" step="any" inputmode="decimal"></div>
+<div class="set-row"><label for="setHeb" data-i18n="hebRate"></label><input id="setHeb" type="number" min="0" step="any" inputmode="decimal"></div>
+<div class="set-row"><label for="setNights" data-i18n="nightsDef"></label><input id="setNights" type="number" min="0" max="30" inputmode="numeric"></div>
 <div class="hint" data-i18n="rulesNote"></div>
 </div>
 

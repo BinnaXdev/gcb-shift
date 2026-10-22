@@ -13,7 +13,7 @@ function load(k, d) { try { var v = localStorage.getItem(k); return v ? JSON.par
 function store(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 
 /* ---------- state ---------- */
-var DEF = { lang: 'fr', theme: 'dark', weekStart: 0, work: 42, rest: 14, bonus: 2, ownFar: 4, ownNear: 2, comp: 2,
+var DEF = { lang: 'fr', theme: 'dark', weekStart: 0, work: 42, rest: 14, bonus: 2, ownFar: 4, ownNear: 2, comp: 2, kmPrice: 4.5, panierRate: 280, hebRate: 300, nights: 1,
   notifOn: false, notifTime: '08:00', notifDays: 2, lastBackup: null };
 var S = Object.assign({}, DEF, load('gcbShiftSettings', {}));
 // migration : ancien réglage "own" (véhicule personnel) -> ">= 800 km"
@@ -36,6 +36,7 @@ function t(k, v) {
   return s;
 }
 function loc() { return { fr: 'fr-FR', en: 'en-GB', ar: 'ar-DZ' }[S.lang] || 'fr-FR'; }
+function money(n) { return Number(n).toLocaleString(loc(), { maximumFractionDigits: 2 }) + ' ' + t('currency'); }
 function fmt(d) { return d.toLocaleDateString(loc(), { day: '2-digit', month: 'short', year: 'numeric' }); }
 function iso(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 function parse(s) { var p = s.split('-').map(Number); return new Date(p[0], p[1] - 1, p[2]); }
@@ -67,13 +68,19 @@ function calc(r, hs) {
   var worked = hs.filter(function (h) { var d = parse(h.date); return d >= start && d <= endWork; });
   var route = r.transport === 'own_far' ? S.ownFar : r.transport === 'own_near' ? S.ownNear : S.comp;
   var rest = S.rest + worked.length * S.bonus + route;
+  var own = r.transport === 'own_far' || r.transport === 'own_near';
+  var km = parseFloat(r.km) || 0;
+  var pd = r.panierDays != null && r.panierDays !== '' ? Number(r.panierDays) : route;
+  var nt = r.nights != null && r.nights !== '' ? Number(r.nights) : S.nights;
+  var fees = own && km > 0 ? { travel: km * S.kmPrice, panier: pd * S.panierRate, heb: nt * S.hebRate, km: km, pd: pd, nt: nt } : null;
+  if (fees) fees.total = fees.travel + fees.panier + fees.heb;
   var endRest = addDays(endWork, rest), next = addDays(endRest, 1), td = today();
   var status, remaining = 0, phaseEnd, progress = 0;
   if (td < start) { status = 'upcoming'; remaining = daysBetween(td, start); phaseEnd = start; }
   else if (td <= endWork) { status = 'work'; remaining = daysBetween(td, endWork); phaseEnd = endWork; progress = Math.min(100, Math.round((daysBetween(start, td) + 1) / S.work * 100)); }
   else if (td <= endRest) { status = 'rest'; remaining = daysBetween(td, endRest); phaseEnd = endRest; progress = rest ? Math.min(100, Math.round(daysBetween(endWork, td) / rest * 100)) : 100; }
   else { status = 'done'; phaseEnd = endRest; progress = 100; }
-  return Object.assign({}, r, { startDate: start, endWork: endWork, worked: worked, route: route, rest: rest,
+  return Object.assign({}, r, { fees: fees, startDate: start, endWork: endWork, worked: worked, route: route, rest: rest,
     endRest: endRest, next: next, status: status, remaining: remaining, phaseEnd: phaseEnd, progress: progress });
 }
 function pick(all) {
@@ -105,7 +112,7 @@ function fillSelects() {
 function syncSettingsUI() {
   $('setLang').value = S.lang; $('setTheme').value = S.theme; $('setWeek').value = String(S.weekStart);
   $('setWork').value = S.work; $('setRest').value = S.rest; $('setBonus').value = S.bonus;
-  $('setOwnFar').value = S.ownFar; $('setOwnNear').value = S.ownNear; $('setComp').value = S.comp;
+  $('setKmPrice').value = S.kmPrice; $('setPanier').value = S.panierRate; $('setHeb').value = S.hebRate; $('setNights').value = S.nights; $('setOwnFar').value = S.ownFar; $('setOwnNear').value = S.ownNear; $('setComp').value = S.comp;
   $('setNotifOn').checked = !!S.notifOn; $('setNotifTime').value = S.notifTime; $('setNotifDays').value = String(S.notifDays);
 }
 
@@ -152,6 +159,8 @@ function renderHome() {
       '<div class="rotation-meta">' + esc(t('workLine', { a: fmt(r.startDate), b: fmt(r.endWork) })) + '<br>' +
       esc(t('restLine', { a: fmt(r.endRest), b: fmt(r.next) })) + '<br>' +
       esc(t('restDays', { n: r.rest, base: S.rest, h: r.worked.length * S.bonus, r: r.route })) + '</div>' +
+      (r.fees ? '<div class="rotation-meta" style="margin-top:2px"><b>' + esc(t('feesLine', { n: money(r.fees.total) })) + '</b><br>' +
+        esc(t('feesDetail', { km: r.fees.km, v: money(r.fees.travel), pd: r.fees.pd, p: money(r.fees.panier), nt: r.fees.nt, h: money(r.fees.heb) })) + '</div>' : '') +
       (r.note ? '<div class="sub">' + esc(r.note) + '</div>' : '') +
       '<div class="rotation-actions"><button class="secondary" data-act="edit" data-id="' + esc(r.id) + '">' + esc(t('edit')) + '</button>' +
       '<button class="secondary" data-act="del" data-id="' + esc(r.id) + '">' + esc(t('del')) + '</button></div></div></div></div>';
@@ -221,7 +230,15 @@ function renderNotifMsg() {
   $('notifMsg').textContent = notifState === 'denied' ? t('notifDenied') : (notifState === 'web' ? t('notifWeb') : '');
 }
 function renderAll() { renderHome(); renderCalendar(); renderHolidays(); renderBackupInfo(); }
+function feeFields() {
+  var own = $('transport').value !== 'Réservation entreprise';
+  $('feeBox').classList.toggle('hidden', !own);
+  $('panierDays').placeholder = String($('transport').value === 'own_far' ? S.ownFar : S.ownNear);
+  $('nights').placeholder = String(S.nights);
+}
+function clearForm() { $('note').value = ''; $('km').value = ''; $('panierDays').value = ''; $('nights').value = ''; }
 function formMode() {
+  feeFields();
   $('formTitle').textContent = t(editingId ? 'editRotation' : 'addRotation');
   $('saveBtn').textContent = t(editingId ? 'updateRotation' : 'saveRotation');
   $('cancelEdit').classList.toggle('hidden', !editingId);
@@ -301,7 +318,7 @@ function doImport(file) {
     var obj = JSON.parse(txt);
     if (!obj || !Array.isArray(obj.rotations)) throw new Error('bad');
     var rots = obj.rotations.filter(function (r) { return r && typeof r.start === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(r.start); })
-      .map(function (r) { return { id: r.id || uid(), start: r.start, transport: (!r.transport || r.transport === 'Propres Moyens') ? 'own_far' : r.transport, note: r.note || '' }; });
+      .map(function (r) { return { id: r.id || uid(), start: r.start, transport: (!r.transport || r.transport === 'Propres Moyens') ? 'own_far' : r.transport, note: r.note || '', km: r.km || '', panierDays: r.panierDays != null ? r.panierDays : '', nights: r.nights != null ? r.nights : '' }; });
     if (!confirm(t('importConfirm'))) return;
     rotations = rots;
     if (obj.settings && typeof obj.settings === 'object') { S = Object.assign({}, DEF, obj.settings); if (S.own != null) { if (obj.settings.ownFar == null) S.ownFar = parseInt(S.own, 10) || DEF.ownFar; delete S.own; } }
@@ -347,12 +364,15 @@ function setup() {
   $('rotationForm').addEventListener('submit', function (e) {
     e.preventDefault();
     var start = $('startDate').value; if (!start) return;
-    var item = { start: start, transport: $('transport').value, note: $('note').value.trim() };
+    var own = $('transport').value !== 'Réservation entreprise';
+    var item = { start: start, transport: $('transport').value, note: $('note').value.trim(),
+      km: own ? ($('km').value || '') : '', panierDays: own ? $('panierDays').value : '', nights: own ? $('nights').value : '' };
     if (editingId) { rotations = rotations.map(function (r) { return r.id === editingId ? Object.assign({}, r, item) : r; }); }
     else rotations.push(Object.assign({ id: uid() }, item));
-    editingId = null; $('note').value = ''; formMode(); saveRotations();
+    editingId = null; clearForm(); formMode(); saveRotations();
   });
-  $('cancelEdit').addEventListener('click', function () { editingId = null; $('note').value = ''; $('startDate').value = iso(today()); formMode(); });
+  $('transport').addEventListener('change', feeFields);
+  $('cancelEdit').addEventListener('click', function () { editingId = null; clearForm(); $('startDate').value = iso(today()); formMode(); });
   $('rotationList').addEventListener('click', function (e) {
     var b = e.target.closest('button[data-act]'); if (!b) return;
     var id = b.getAttribute('data-id');
@@ -360,7 +380,7 @@ function setup() {
       if (confirm(t('confirmDel'))) { rotations = rotations.filter(function (r) { return r.id !== id; }); if (editingId === id) { editingId = null; formMode(); } saveRotations(); }
     } else {
       var r = rotations.filter(function (x) { return x.id === id; })[0]; if (!r) return;
-      editingId = id; $('startDate').value = r.start; $('transport').value = r.transport; $('note').value = r.note || '';
+      editingId = id; $('startDate').value = r.start; $('transport').value = r.transport; $('note').value = r.note || ''; $('km').value = r.km || ''; $('panierDays').value = r.panierDays != null ? r.panierDays : ''; $('nights').value = r.nights != null ? r.nights : '';
       formMode(); $('formTitle').scrollIntoView({ behavior: 'smooth' });
     }
   });
@@ -396,6 +416,12 @@ function setup() {
     $(c[0]).addEventListener('change', function () {
       var v = parseInt($(c[0]).value, 10); if (isNaN(v)) v = DEF[c[1]];
       v = Math.max(c[2], Math.min(c[3], v)); S[c[1]] = v; $(c[0]).value = v; saveSettings(); fillSelects(); syncSettingsUI(); renderAll(); afterDataChange();
+    });
+  });
+  [['setKmPrice', 'kmPrice', 0, 100000, true], ['setPanier', 'panierRate', 0, 1000000, true], ['setHeb', 'hebRate', 0, 1000000, true], ['setNights', 'nights', 0, 30, false]].forEach(function (c) {
+    $(c[0]).addEventListener('change', function () {
+      var v = c[4] ? parseFloat($(c[0]).value) : parseInt($(c[0]).value, 10); if (isNaN(v)) v = DEF[c[1]];
+      v = Math.max(c[2], Math.min(c[3], v)); S[c[1]] = v; $(c[0]).value = v; saveSettings(); feeFields(); renderAll();
     });
   });
   $('setNotifOn').addEventListener('change', function (e) {
