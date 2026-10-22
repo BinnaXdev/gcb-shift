@@ -13,11 +13,16 @@ function load(k, d) { try { var v = localStorage.getItem(k); return v ? JSON.par
 function store(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 
 /* ---------- state ---------- */
-var DEF = { lang: 'fr', theme: 'dark', weekStart: 0, work: 42, rest: 14, bonus: 2, own: 4, comp: 2,
+var DEF = { lang: 'fr', theme: 'dark', weekStart: 0, work: 42, rest: 14, bonus: 2, ownFar: 4, ownNear: 2, comp: 2,
   notifOn: false, notifTime: '08:00', notifDays: 2, lastBackup: null };
 var S = Object.assign({}, DEF, load('gcbShiftSettings', {}));
+// migration : ancien réglage "own" (véhicule personnel) -> ">= 800 km"
+if (S.own != null) { var _o = parseInt(S.own, 10); if (!isNaN(_o) && !load('gcbShiftSettings', {}).ownFar) S.ownFar = _o; delete S.own; }
 var rotations = load('gcbShiftRotations', []);
 if (!Array.isArray(rotations)) rotations = [];
+// migration : ancien transport 'Propres Moyens' -> 'own_far'
+rotations.forEach(function (r) { if (r && r.transport === 'Propres Moyens') r.transport = 'own_far'; });
+store('gcbShiftRotations', rotations);
 var customH = load('gcbShiftCustomHolidays', []);
 var hOv = load('gcbShiftHolidayOverrides', {});
 var editingId = null, holEditId = null, calSel = null, notifState = '';
@@ -60,7 +65,7 @@ function holidays() {
 function calc(r, hs) {
   var start = parse(r.start), endWork = addDays(start, S.work - 1);
   var worked = hs.filter(function (h) { var d = parse(h.date); return d >= start && d <= endWork; });
-  var route = r.transport === 'Propres Moyens' ? S.own : S.comp;
+  var route = r.transport === 'own_far' ? S.ownFar : r.transport === 'own_near' ? S.ownNear : S.comp;
   var rest = S.rest + worked.length * S.bonus + route;
   var endRest = addDays(endWork, rest), next = addDays(endRest, 1), td = today();
   var status, remaining = 0, phaseEnd, progress = 0;
@@ -92,7 +97,7 @@ function fillSelect(sel, opts) {
 var DAYSUF = { fr: 'j', en: 'd', ar: 'يوم' };
 function fillSelects() {
   var u = DAYSUF[S.lang] || 'j';
-  fillSelect($('transport'), [['Propres Moyens', t('ownVehicle') + ' (+' + S.own + ' ' + u + ')'], ['Réservation entreprise', t('compVehicle') + ' (+' + S.comp + ' ' + u + ')']]);
+  fillSelect($('transport'), [['own_far', t('ownFar') + ' (+' + S.ownFar + ' ' + u + ')'], ['own_near', t('ownNear') + ' (+' + S.ownNear + ' ' + u + ')'], ['Réservation entreprise', t('compVehicle') + ' (+' + S.comp + ' ' + u + ')']]);
   fillSelect($('setTheme'), [['auto', t('themeAuto')], ['dark', t('themeDark')], ['light', t('themeLight')]]);
   fillSelect($('setWeek'), [['6', t('daySat')], ['0', t('daySun')], ['1', t('dayMon')]]);
   fillSelect($('setNotifDays'), [1, 2, 3, 5, 7].map(function (n) { return [n, t('notifDaysOpt', { n: n })]; }));
@@ -100,7 +105,7 @@ function fillSelects() {
 function syncSettingsUI() {
   $('setLang').value = S.lang; $('setTheme').value = S.theme; $('setWeek').value = String(S.weekStart);
   $('setWork').value = S.work; $('setRest').value = S.rest; $('setBonus').value = S.bonus;
-  $('setOwn').value = S.own; $('setComp').value = S.comp;
+  $('setOwnFar').value = S.ownFar; $('setOwnNear').value = S.ownNear; $('setComp').value = S.comp;
   $('setNotifOn').checked = !!S.notifOn; $('setNotifTime').value = S.notifTime; $('setNotifDays').value = String(S.notifDays);
 }
 
@@ -296,10 +301,10 @@ function doImport(file) {
     var obj = JSON.parse(txt);
     if (!obj || !Array.isArray(obj.rotations)) throw new Error('bad');
     var rots = obj.rotations.filter(function (r) { return r && typeof r.start === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(r.start); })
-      .map(function (r) { return { id: r.id || uid(), start: r.start, transport: r.transport || 'Propres Moyens', note: r.note || '' }; });
+      .map(function (r) { return { id: r.id || uid(), start: r.start, transport: (!r.transport || r.transport === 'Propres Moyens') ? 'own_far' : r.transport, note: r.note || '' }; });
     if (!confirm(t('importConfirm'))) return;
     rotations = rots;
-    if (obj.settings && typeof obj.settings === 'object') S = Object.assign({}, DEF, obj.settings);
+    if (obj.settings && typeof obj.settings === 'object') { S = Object.assign({}, DEF, obj.settings); if (S.own != null) { if (obj.settings.ownFar == null) S.ownFar = parseInt(S.own, 10) || DEF.ownFar; delete S.own; } }
     if (Array.isArray(obj.customHolidays)) customH = obj.customHolidays;
     if (obj.holidayOverrides && typeof obj.holidayOverrides === 'object') hOv = obj.holidayOverrides;
     store('gcbShiftCustomHolidays', customH); store('gcbShiftHolidayOverrides', hOv); saveSettings();
@@ -387,7 +392,7 @@ function setup() {
   $('setLang').addEventListener('change', function (e) { S.lang = e.target.value; saveSettings(); applyLang(); renderAll(); pushWidget(); scheduleNotifications(); });
   $('setTheme').addEventListener('change', function (e) { S.theme = e.target.value; saveSettings(); applyTheme(); });
   $('setWeek').addEventListener('change', function (e) { S.weekStart = parseInt(e.target.value, 10); saveSettings(); renderCalendar(); });
-  [['setWork', 'work', 1, 365], ['setRest', 'rest', 0, 365], ['setBonus', 'bonus', 0, 30], ['setOwn', 'own', 0, 30], ['setComp', 'comp', 0, 30]].forEach(function (c) {
+  [['setWork', 'work', 1, 365], ['setRest', 'rest', 0, 365], ['setBonus', 'bonus', 0, 30], ['setOwnFar', 'ownFar', 0, 30], ['setOwnNear', 'ownNear', 0, 30], ['setComp', 'comp', 0, 30]].forEach(function (c) {
     $(c[0]).addEventListener('change', function () {
       var v = parseInt($(c[0]).value, 10); if (isNaN(v)) v = DEF[c[1]];
       v = Math.max(c[2], Math.min(c[3], v)); S[c[1]] = v; $(c[0]).value = v; saveSettings(); fillSelects(); syncSettingsUI(); renderAll(); afterDataChange();
